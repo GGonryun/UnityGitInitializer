@@ -1,0 +1,23 @@
+﻿=== SSH Key Variables
+userProfile@Environment.GetEnvironmentVariable("userprofile")
+defaultSSHDirectory@Path.Combine(Environment.GetEnvironmentVariable("userprofile"), ".ssh")
+privateKeyDefaultFilePath@Path.Combine(defaultSSHDirectory, "id_rsa")
+publicKeyDefaultFilePath@Path.Combine(defaultSSHDirectory, "id_rsa.pub")
+=== Websites
+sshKeyWebsite@https://github.com/settings/ssh/new
+gitlfs@https://github.com/git-lfs/git-lfs/releases/download/v2.7.1/git-lfs-windows-v2.7.1.exe
+precommitHook@https://raw.githubusercontent.com/kayy/git-pre-commit-hook-unity-assets/master/pre-commit
+gitIgnore@https://raw.githubusercontent.com/github/gitignore/master/Unity.gitignore
+gitAttributes@https://raw.githubusercontent.com/GGonryun/UnityGitInitializer/master/.gitattributes
+git32@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-32-bit.exe
+git64@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe
+=== Executables
+programFiles@%ProgramW6432%
+textEditor@notepad.exe
+gitlfsExecutable@git-lfs.exe
+gitExecutable@git.exe
+publicKey@id_rsa.pub
+privateKey@id_rsa
+sshDirectory@.ssh
+fullSshDirectory@
+userprofile@userprofile
