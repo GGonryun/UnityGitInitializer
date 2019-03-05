@@ -1,34 +1,27 @@
 ﻿using Chilkat;
-using System;
+using Miguel.Environment;
+using Miguel.Web;
 using System.Collections.Generic;
 using System.IO;
 using System.Management.Automation;
 using System.Windows.Forms;
 
-namespace DLTest
+namespace Miguel.SSH
 {
-    public class SshInfo
-    {
-        public static string userProfile = Environment.GetEnvironmentVariable("userprofile");
-        public static string defaultSSHDirectory = Path.Combine(Environment.GetEnvironmentVariable("userprofile"), ".ssh");
-        public static string privateKeyDefaultFilePath = Path.Combine(defaultSSHDirectory, "id_rsa");
-        public static string publicKeyDefaultFilePath = Path.Combine(defaultSSHDirectory, "id_rsa.pub");
-        public static string sshKeyWebsite = "https://github.com/settings/ssh/new";
-    }
 
     public static class SshKeyPairUtils
     {
         public static void ClipSSHKeys(string location)
         {
             Clipboard.SetText(FileManipulator.ReadFile(location));
-            WebLoader.Load(SshInfo.sshKeyWebsite);
+            WebLoader.Load(EnvironmentVariables.Instance["sshKeyWebsite"]);
         }
 
         public static bool FindSSHKeys(out IEnumerable<PSObject> results)
         {
             using (PowerShell powershell = PowerShell.Create())
             {
-                return FileLocator.FindFile(out results, powershell, Path.GetFileName(SshInfo.publicKeyDefaultFilePath), SshInfo.userProfile);
+                return FileLocator.FindFile(out results, powershell, Path.GetFileName(EnvironmentVariables.Instance["publicKeyDefaultFilePath"]), EnvironmentVariables.Instance["userProfile"]);
             }
         }
 
@@ -41,10 +34,10 @@ namespace DLTest
 
         public static string SaveKeyPair(SshKeyPair keyPair)
         {
-            DirectoryManipulator.CreateNew(SshInfo.defaultSSHDirectory);
-            FileManipulator.SaveFile(SshInfo.publicKeyDefaultFilePath, keyPair.PublicKey);
-            FileManipulator.SaveFile(SshInfo.privateKeyDefaultFilePath, keyPair.PrivateKey);
-            return SshInfo.publicKeyDefaultFilePath;
+            DirectoryManipulator.CreateNew(EnvironmentVariables.Instance["defaultSSHDirectory"]);
+            FileManipulator.SaveFile(EnvironmentVariables.Instance["publicKeyDefaultFilePath"], keyPair.PublicKey);
+            FileManipulator.SaveFile(EnvironmentVariables.Instance["privateKeyDefaultFilePath"], keyPair.PrivateKey);
+            return EnvironmentVariables.Instance["publicKeyDefaultFilePath"];
         }
     }
 

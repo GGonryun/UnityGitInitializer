@@ -1,9 +1,44 @@
-﻿=== SSH Key Variables
-userProfile@Environment.GetEnvironmentVariable("userprofile")
-defaultSSHDirectory@Path.Combine(Environment.GetEnvironmentVariable("userprofile"), ".ssh")
-privateKeyDefaultFilePath@Path.Combine(defaultSSHDirectory, "id_rsa")
-publicKeyDefaultFilePath@Path.Combine(defaultSSHDirectory, "id_rsa.pub")
-=== Websites
+﻿========================= LEGEND =========================
+======  +Use at least 3 equal signs for a comment,  ======
+======   only works at the beginning of a line.     ======
+======  +Use the "@" symbol to create a new key,    ======
+======   value pair.                                ======
+======  +Use the "#" symbol to fetch a variable.    ======
+======   The variable must be initialized before    ======
+======   attempting to access it.                   ======
+======  +Use the "=" symbol to add to a path.       ======
+======  +Use "env:" to fetch the environ variable.  ======
+======  +DO NOT change the keys.					======
+==========================================================
+
+================== Variables ==================
+initkey@true
+install@true
+initgit@true
+userpath@none
+
+programFiles@%ProgramW6432%
+publicKey@id_rsa.pub
+privateKey@id_rsa
+sshFolder@.ssh
+gitFolder@.git
+
+================== Executables ==================
+textEditor@wordpad.exe
+gitlfsExecutable@git-lfs.exe
+gitExecutable@git.exe
+
+================== SSH Key Variables ==================
+userProfile@env:userprofile
+defaultSSHDirectory@#userProfile=#sshFolder
+privateKeyDefaultFilePath@#defaultSSHDirectory=#privateKey
+publicKeyDefaultFilePath@#defaultSSHDirectory=#publicKey
+
+================== Git Paths ==================
+precommitPath@#gitFolder=hooks=pre-commit
+gitAttributesPath@#gitFolder=info=attributes
+gitIgnorePath@.gitignore
+================== Websites ==================
 sshKeyWebsite@https://github.com/settings/ssh/new
 gitlfs@https://github.com/git-lfs/git-lfs/releases/download/v2.7.1/git-lfs-windows-v2.7.1.exe
 precommitHook@https://raw.githubusercontent.com/kayy/git-pre-commit-hook-unity-assets/master/pre-commit
@@ -11,13 +46,4 @@ gitIgnore@https://raw.githubusercontent.com/github/gitignore/master/Unity.gitign
 gitAttributes@https://raw.githubusercontent.com/GGonryun/UnityGitInitializer/master/.gitattributes
 git32@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-32-bit.exe
 git64@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe
-=== Executables
-programFiles@%ProgramW6432%
-textEditor@notepad.exe
-gitlfsExecutable@git-lfs.exe
-gitExecutable@git.exe
-publicKey@id_rsa.pub
-privateKey@id_rsa
-sshDirectory@.ssh
-fullSshDirectory@
-userprofile@userprofile
+
