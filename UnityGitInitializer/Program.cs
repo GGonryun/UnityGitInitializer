@@ -51,9 +51,9 @@ namespace UnityGitPreparer
                 {
                     Dialogue("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Loading Secret Mode:");
                     Random r = new Random();
-                    for (int i = 0; i <= 1000; i++)
+                    for (int i = 0; i <= 5000; i++)
                     {
-                        Dialogue($"\r{i / 50f:F2}%");
+                        Console.Write($"\r{i / 50f:F2}%");
                         System.Threading.Thread.Sleep(r.Next(0, 15));
                     }
                     Dialogue("", "The secret is ready...");
