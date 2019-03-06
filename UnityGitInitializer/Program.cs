@@ -50,14 +50,19 @@ namespace UnityGitPreparer
                 else if (arg == "-secret_mode")
                 {
                     Dialogue("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Loading Secret Mode:");
-                    for (int i = 0; i <= 5000; i++)
+                    Random r = new Random();
+                    for (int i = 0; i <= 1000; i++)
                     {
-                        Console.Write($"\r{i / 50f:F2}%");
-                        Random r = new Random();
+                        Dialogue($"\r{i / 50f:F2}%");
                         System.Threading.Thread.Sleep(r.Next(0, 15));
                     }
-                    Console.WriteLine("");
-                    Console.WriteLine("-fart noise-");
+                    Dialogue("", "The secret is ready...");
+                    System.Threading.Thread.Sleep(5000);
+                    while (true)
+                    {
+                        Dialogue($"-f{WordLoop(r, 10, "a")}rt noise-");
+                    }
+                    return;
                 }
             }
 
@@ -79,7 +84,16 @@ namespace UnityGitPreparer
             }
         }
 
-
+        private static string WordLoop(Random r, int v, string s)
+        {
+            string letter = "";
+            int max = r.Next(0, v);
+            for(int i = 0; i < max; i++)
+            {
+                letter += s;
+            }
+            return s;
+        }
 
         private static void InitializeGitRepository()
         {
