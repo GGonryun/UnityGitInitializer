@@ -91,9 +91,10 @@ namespace UnityGitPreparer
             bool setupRemote = AskYesNo("Would you like to link and pull from a remote repository?");
             string origin = GitRepository.RequestOrigin(setupRemote);
 
+            bool uploadProject = AskYesNo("Would you like to upload your project immediately?");
             using (PowerShell powershell = PowerShell.Create())
             {
-                IEnumerable<PSObject> results = GitRepository.CreateRepository(powershell, ev["userpath"], setupRemote, origin);
+                IEnumerable<PSObject> results = GitRepository.CreateRepository(powershell, ev["userpath"], setupRemote, origin, uploadProject);
             }
 
             Dialogue("I am now placing Precommit Hook, Git LFS Attributes, and Git Ignore File");
@@ -205,7 +206,7 @@ public static class GitRepository
         return origin;
     }
 
-    public static IEnumerable<PSObject> CreateRepository(PowerShell powershell, string directory, bool setupRemote = false, string origin = "")
+    public static IEnumerable<PSObject> CreateRepository(PowerShell powershell, string directory, bool setupRemote, string origin, bool upload)
     {
         powershell.AddScript(String.Format(@"cd {0}", directory));
         powershell.AddScript(@"git init");
@@ -215,15 +216,18 @@ public static class GitRepository
             powershell.AddScript($@"git remote add origin {origin}");
             powershell.AddScript(@"git pull origin master");
         }
-        powershell.AddScript(@"git add *");
-        powershell.AddScript(@"git commit -m 'Initializing Project'");
-        if (setupRemote)
+        if(upload)
         {
-            powershell.AddScript(@"git push -u origin master");
-        }
-        else
-        {
-            powershell.AddScript(@"git push");
+            powershell.AddScript(@"git add *");
+            powershell.AddScript(@"git commit -m 'Initializing Project'");
+            if (setupRemote)
+            {
+                powershell.AddScript(@"git push -u origin master");
+            }
+            else
+            {
+                powershell.AddScript(@"git push");
+            }
         }
         return powershell.Invoke();
     }
