@@ -27,7 +27,7 @@ namespace Miguel.Web
             string codeString = "";
             foreach(var line in code)
             {
-                codeString += $"{line.InnerHtml}\n";
+                codeString += $"{line.InnerHtml}\n".Replace("&quot;", @"""");
             }
 
             FileManipulator.SaveFile(toPath, codeString);
