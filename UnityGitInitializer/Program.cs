@@ -71,7 +71,12 @@ namespace UnityGitPreparer
                 using (WebClient webClient = new WebClient())
                 {
                     InstallFile(webClient, EnvironmentVariables.Instance["gitlfsExecutable"], System.Environment.ExpandEnvironmentVariables(EnvironmentVariables.Instance["programFiles"]), EnvironmentVariables.Instance["gitlfs"]);
-                    InstallFile(webClient, EnvironmentVariables.Instance["gitExecutable"], System.Environment.ExpandEnvironmentVariables(EnvironmentVariables.Instance["programFiles"]), System.Environment.Is64BitOperatingSystem ? EnvironmentVariables.Instance["git64"] : EnvironmentVariables.Instance["git32"]);
+                    bool needsRestart = InstallFile(webClient, EnvironmentVariables.Instance["gitExecutable"], System.Environment.ExpandEnvironmentVariables(EnvironmentVariables.Instance["programFiles"]), System.Environment.Is64BitOperatingSystem ? EnvironmentVariables.Instance["git64"] : EnvironmentVariables.Instance["git32"]);
+                    if(needsRestart)
+                    {
+                        Dialogue("I see that this is your first time setting up Git", "Please restart this console and run the Initializer again using the -noinstall argument.");
+                        return;
+                    }
                 }
             }
             if (EnvironmentVariables.Instance["initkey"] == "true")
@@ -162,7 +167,7 @@ namespace UnityGitPreparer
             return false;
         }
 
-        private static void InstallFile(WebClient webclient, string executableName, string baseSearchingDirectory, string fileWebsite)
+        private static bool InstallFile(WebClient webclient, string executableName, string baseSearchingDirectory, string fileWebsite)
         {
             bool skip = RequestDownload(executableName, baseSearchingDirectory);
             if (!skip)
@@ -171,7 +176,9 @@ namespace UnityGitPreparer
                 string tempLocation = downloader.DownloadFile(webclient, fileWebsite);
                 FileInstaller.Install(tempLocation);
                 Directory.Delete(Path.GetDirectoryName(tempLocation), true);
+                return true;
             }
+            return false;
         }
 
         private static bool RequestDownload(string executableName, string baseSearchingDirectory)
@@ -219,7 +226,7 @@ public static class GitRepository
         powershell.AddScript(@"git init");
         Collection<PSObject> results = powershell.Invoke();
 
-        foreach(var result in results)
+        foreach (var result in results)
         {
             Console.WriteLine(result.ToString());
         }
@@ -228,10 +235,14 @@ public static class GitRepository
         {
             powershell.AddScript($@"git remote add origin {origin}");
             powershell.AddScript(@"git pull origin master");
+            powershell.AddScript("yes");
             Dialogue("I am now pulling the project from origin, please wait...");
-            powershell.Invoke();
+            results = powershell.Invoke();
             System.Threading.Thread.Sleep(3000);
-            
+            foreach(var result in results)
+            {
+                Dialogue(result.ToString());
+            }
         }
 
         if (AskYesNo("Would you like to setup initial files?"))
