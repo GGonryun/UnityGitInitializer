@@ -94,6 +94,10 @@ namespace UnityGitPreparer
             using (PowerShell powershell = PowerShell.Create())
             {
                 IEnumerable<PSObject> results = GitRepository.CreateRepository(powershell, ev["userpath"], setupRemote, origin, uploadProject);
+                foreach(var result in results)
+                {
+                    Console.WriteLine(result);
+                }
             }
             Dialogue("Initialization Complete! Enjoy your project.");
 
@@ -199,16 +203,21 @@ public static class GitRepository
     {
         powershell.AddScript(String.Format($"Set-Location \"{directory}\""));
         powershell.AddScript(@"git init");
-        Collection<PSObject> resultz = powershell.Invoke();
+        Collection<PSObject> results = powershell.Invoke();
 
-        foreach(var result in resultz)
+        foreach(var result in results)
         {
             Console.WriteLine(result.ToString());
         }
+
         if (setupRemote)
         {
             powershell.AddScript($@"git remote add origin {origin}");
             powershell.AddScript(@"git pull origin master");
+            Dialogue("I am now pulling the project from origin, please wait...");
+            powershell.Invoke();
+            System.Threading.Thread.Sleep(3000);
+            
         }
 
         if (AskYesNo("Would you like to setup initial files?"))
