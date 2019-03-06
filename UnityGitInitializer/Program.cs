@@ -235,9 +235,10 @@ public static class GitRepository
         {
             powershell.AddScript($@"git remote add origin {origin}");
             powershell.AddScript(@"git pull origin master");
-            powershell.AddScript("yes");
-            Dialogue("I am now pulling the project from origin, please wait...");
             results = powershell.Invoke();
+            powershell.AddScript("yes");
+            results = powershell.Invoke();
+            Dialogue("I am now pulling the project from origin, please wait...");
             System.Threading.Thread.Sleep(3000);
             foreach(var result in results)
             {
