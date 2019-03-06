@@ -132,7 +132,7 @@ namespace UnityGitPreparer
                 if (shouldCreateSSHKeys)
                 {
                     Dialogue("Alright then, I will need a valid email address to create your SSH Keys.", "For example: example@mail.com");
-                    string email = ValidateInput("The string you passed me was");
+                    string email = ReadInput();
                     Dialogue("I will now proceed.", "This may take a few seconds...");
                     var keyPair = SshKeyPairUtils.CreateSSHKeyPair(email);
                     location = SshKeyPairUtils.SaveKeyPair(keyPair);
@@ -188,7 +188,8 @@ public static class GitRepository
         if (setupRemote)
         {
             Dialogue("Please enter the remote location, this location will be set as 'origin'.", "For example [git@github.com:GGonryun/UnityGitInitializer.git]");
-            origin = ValidateInput("The remote location you passed me was");
+            
+            origin = ReadInput();
         }
 
         return origin;
@@ -292,19 +293,6 @@ public static class Interface
     public static string ReadInput()
     {
         return Console.ReadLine().ToLower();
-    }
-
-    public static string ValidateInput(string dialogue)
-    {
-        string input = ReadInput();
-        bool valid = false;
-        while (!valid)
-        {
-            Dialogue($"{dialogue}: {input}");
-            valid = AskYesNo("Is this correct?");
-        }
-        return input;
-
     }
 
 }
