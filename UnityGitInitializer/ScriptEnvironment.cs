@@ -58,7 +58,7 @@ namespace Miguel.Environment
                 if(environmentVariables.ContainsKey(key))
                 {
                     environmentVariables[key] = value;
-                    Console.WriteLine($"Overwriting {key} with {value}.");
+                    Console.WriteLine($"Overwriting {key} with {value}");
                 }
             }
         }

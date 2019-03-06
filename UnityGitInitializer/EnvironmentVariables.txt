@@ -8,7 +8,7 @@
 ======   attempting to access it.                   ======
 ======  +Use the "=" symbol to add to a path.       ======
 ======  +Use "env:" to fetch the environ variable.  ======
-======  +DO NOT change the keys.					======
+======  +DO NOT change the keys.                    ======
 ==========================================================
 
 ================== Variables ==================
@@ -22,6 +22,7 @@ publicKey@id_rsa.pub
 privateKey@id_rsa
 sshFolder@.ssh
 gitFolder@.git
+assetsFolder@Assets
 
 ================== Executables ==================
 textEditor@wordpad.exe
@@ -38,12 +39,15 @@ publicKeyDefaultFilePath@#defaultSSHDirectory=#publicKey
 precommitPath@#gitFolder=hooks=pre-commit
 gitAttributesPath@#gitFolder=info=attributes
 gitIgnorePath@.gitignore
+emptyDirectoryRemoverPath@#assetsFolder=EmptyDirectoriesRemover.cs
+
 ================== Websites ==================
 sshKeyWebsite@https://github.com/settings/ssh/new
+emptyDirectoryRemover@http://ideaplusplus.com/emptydirectoriesremover-cs/
 gitlfs@https://github.com/git-lfs/git-lfs/releases/download/v2.7.1/git-lfs-windows-v2.7.1.exe
 precommitHook@https://raw.githubusercontent.com/kayy/git-pre-commit-hook-unity-assets/master/pre-commit
 gitIgnore@https://raw.githubusercontent.com/github/gitignore/master/Unity.gitignore
-gitAttributes@https://raw.githubusercontent.com/GGonryun/UnityGitInitializer/master/.gitattributes
+gitAttributes@https://raw.githubusercontent.com/GGonryun/UnityGitInitializer/master/GitAttributes
 git32@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-32-bit.exe
 git64@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe
 

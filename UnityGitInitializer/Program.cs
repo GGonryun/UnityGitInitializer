@@ -4,6 +4,7 @@ using Miguel.SSH;
 using Miguel.Web;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -14,8 +15,6 @@ namespace UnityGitPreparer
 {
     class Program
     {
-
-
         [STAThread]
         static void Main(string[] args)
         {
@@ -96,19 +95,8 @@ namespace UnityGitPreparer
             {
                 IEnumerable<PSObject> results = GitRepository.CreateRepository(powershell, ev["userpath"], setupRemote, origin, uploadProject);
             }
+            Dialogue("Initialization Complete! Enjoy your project.");
 
-            Dialogue("I am now placing Precommit Hook, Git LFS Attributes, and Git Ignore File");
-            PlaceFiles(ev["precommitHook"], Path.Combine(ev["userpath"], ev["precommitPath"]));
-            PlaceFiles(ev["gitAttributes"], Path.Combine(ev["userpath"], ev["gitAttributesPath"]));
-            PlaceFiles(ev["gitAttributes"], Path.Combine(ev["userpath"], ev["gitIgnorePath"]));
-        }
-
-        private static void PlaceFiles(string website, string filePath)
-        {
-            using (var wc = new WebClient())
-            {
-                WebLoader.SaveText(wc, website, filePath);
-            }
         }
 
         private static void UploadKeys()
@@ -144,7 +132,7 @@ namespace UnityGitPreparer
                 if (shouldCreateSSHKeys)
                 {
                     Dialogue("Alright then, I will need a valid email address to create your SSH Keys.", "For example: example@mail.com");
-                    string email = ValidateInput("The string you passed me was: ");
+                    string email = ValidateInput("The string you passed me was");
                     Dialogue("I will now proceed.", "This may take a few seconds...");
                     var keyPair = SshKeyPairUtils.CreateSSHKeyPair(email);
                     location = SshKeyPairUtils.SaveKeyPair(keyPair);
@@ -200,7 +188,7 @@ public static class GitRepository
         if (setupRemote)
         {
             Dialogue("Please enter the remote location, this location will be set as 'origin'.", "For example [git@github.com:GGonryun/UnityGitInitializer.git]");
-            origin = Console.ReadLine();
+            origin = ValidateInput("The remote location you passed me was");
         }
 
         return origin;
@@ -208,28 +196,69 @@ public static class GitRepository
 
     public static IEnumerable<PSObject> CreateRepository(PowerShell powershell, string directory, bool setupRemote, string origin, bool upload)
     {
-        powershell.AddScript(String.Format(@"cd {0}", directory));
+        powershell.AddScript(String.Format($"Set-Location \"{directory}\""));
         powershell.AddScript(@"git init");
+        Collection<PSObject> resultz = powershell.Invoke();
 
+        foreach(var result in resultz)
+        {
+            Console.WriteLine(result.ToString());
+        }
         if (setupRemote)
         {
             powershell.AddScript($@"git remote add origin {origin}");
             powershell.AddScript(@"git pull origin master");
         }
-        if(upload)
+
+        if (AskYesNo("Would you like to setup initial files?"))
         {
-            powershell.AddScript(@"git add *");
-            powershell.AddScript(@"git commit -m 'Initializing Project'");
-            if (setupRemote)
-            {
-                powershell.AddScript(@"git push -u origin master");
-            }
-            else
-            {
-                powershell.AddScript(@"git push");
-            }
+            SetUpGitFiles();
+        }
+
+        if (upload)
+        {
+            UploadProject(powershell, setupRemote);
         }
         return powershell.Invoke();
+    }
+
+    private static void SetUpGitFiles()
+    {
+        EnvironmentVariables ev = EnvironmentVariables.Instance;
+        string precommitPath = Path.Combine(ev["userpath"], ev["precommitPath"]);
+        string gitAttributesPath = Path.Combine(ev["userpath"], ev["gitAttributesPath"]);
+        string gitIgnorePath = Path.Combine(ev["userpath"], ev["gitIgnorePath"]);
+        string emptyDirectoryRemoverPath = Path.Combine(ev["userpath"], ev["emptyDirectoryRemoverPath"]);
+        using (var wc = new WebClient())
+        {
+            WebLoader.SaveText(wc, ev["precommitHook"], precommitPath);
+            Dialogue($"Precommit Hook has been placed @ {precommitPath}");
+            WebLoader.SaveText(wc, ev["gitAttributes"], gitAttributesPath);
+            Dialogue($"Git Attributes have been placed @ {gitAttributesPath}");
+            WebLoader.SaveText(wc, ev["gitIgnore"], gitIgnorePath);
+            Dialogue($"Git Ignore has been been placed @ {gitIgnorePath}");
+            if (!DirectoryManipulator.Find(Path.Combine(ev["userpath"], ev["assetsFolder"])))
+            {
+                Dialogue("I was unable to locate an assets folder, I have created one for now.");
+                DirectoryManipulator.CreateNew(Path.GetDirectoryName(emptyDirectoryRemoverPath));
+            }
+            WebLoader.ScrapeText(wc, ev["emptyDirectoryRemover"], emptyDirectoryRemoverPath);
+            Dialogue($"EmptyDirectoryRemover has been placed @ {emptyDirectoryRemoverPath}");
+        }
+    }
+
+    private static void UploadProject(PowerShell powershell, bool setupRemote)
+    {
+        powershell.AddScript(@"git add *");
+        powershell.AddScript(@"git commit -m 'Initializing Project'");
+        if (setupRemote)
+        {
+            powershell.AddScript(@"git push -u origin master");
+        }
+        else
+        {
+            powershell.AddScript(@"git push");
+        }
     }
 }
 
