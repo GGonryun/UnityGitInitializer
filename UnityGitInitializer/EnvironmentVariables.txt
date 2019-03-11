@@ -17,7 +17,7 @@ install@true
 initgit@true
 userpath@none
 
-programFiles@%ProgramW6432%
+
 publicKey@id_rsa.pub
 privateKey@id_rsa
 sshFolder@.ssh
@@ -28,8 +28,11 @@ assetsFolder@Assets
 textEditor@wordpad.exe
 gitlfsExecutable@git-lfs.exe
 gitExecutable@git.exe
+helixExecutable@p4merge.exe
 
 ================== SSH Key Variables ==================
+programFiles@%ProgramW6432%
+programFiles86@env:programfiles
 userProfile@env:userprofile
 defaultSSHDirectory@#userProfile=#sshFolder
 privateKeyDefaultFilePath@#defaultSSHDirectory=#privateKey
@@ -50,4 +53,7 @@ gitIgnore@https://raw.githubusercontent.com/github/gitignore/master/Unity.gitign
 gitAttributes@https://raw.githubusercontent.com/GGonryun/UnityGitInitializer/master/GitAttributes
 git32@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-32-bit.exe
 git64@https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/Git-2.21.0-64-bit.exe
+helix32@http://www.perforce.com/downloads/perforce/r18.4/bin.ntx86/p4vinst.exe
+helix64@http://www.perforce.com/downloads/perforce/r18.4/bin.ntx64/p4vinst64.exe
+
 

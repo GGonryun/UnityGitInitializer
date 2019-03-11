@@ -27,6 +27,7 @@ namespace UnityGitPreparer
                     @"You may use the '-noinstall' to skip installing.",
                     @"Secret Mode can be enabled via '-secret_mode' although you probably can't do much as a user."
                     );
+
                 return;
             }
 
@@ -71,6 +72,7 @@ namespace UnityGitPreparer
                 using (WebClient webClient = new WebClient())
                 {
                     InstallFile(webClient, EnvironmentVariables.Instance["gitlfsExecutable"], System.Environment.ExpandEnvironmentVariables(EnvironmentVariables.Instance["programFiles"]), EnvironmentVariables.Instance["gitlfs"]);
+                    InstallFile(webClient, EnvironmentVariables.Instance["helixExecutable"], EnvironmentVariables.Instance["programFiles86"], System.Environment.Is64BitOperatingSystem ? EnvironmentVariables.Instance["helix64"] : EnvironmentVariables.Instance["helix32"]);
                     bool needsRestart = InstallFile(webClient, EnvironmentVariables.Instance["gitExecutable"], System.Environment.ExpandEnvironmentVariables(EnvironmentVariables.Instance["programFiles"]), System.Environment.Is64BitOperatingSystem ? EnvironmentVariables.Instance["git64"] : EnvironmentVariables.Instance["git32"]);
                     if(needsRestart)
                     {
@@ -113,10 +115,6 @@ namespace UnityGitPreparer
             using (PowerShell powershell = PowerShell.Create())
             {
                 IEnumerable<PSObject> results = GitRepository.CreateRepository(powershell, ev["userpath"], setupRemote, origin, uploadProject);
-                foreach(var result in results)
-                {
-                    Console.WriteLine(result);
-                }
             }
             Dialogue("Initialization Complete! Enjoy your project.");
 
