@@ -1,0 +1,46 @@
+`git config --global user.name "John Doe"`
+
+`git config --global user.email johndoe@example.com`
+
+`git config --global core.editor "nano"`
+
+`git config --global --edit`
+add: 
+[merge]
+	tool = unityyamlmerge
+[mergetool "unityyamlmerge"]
+	trustExitCode = false
+	keeptemporaries = true
+	keepBackup = false
+	path = C:/Program Files/Unity/Hub/Editor/2018.3.8f1/Editor/Data/Tools/UnityYAMLMerge.exe
+	cmd = \"C:/Program Files/Unity/Hub/Editor/2018.3.8f1/Editor/Data/Tools/UnityYAMLMerge.exe\" merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
+
+YAMLMerge can be located @ C:\<Program Files> or <Program Files (x86)>\Unity\Hub\Editor\<UNITY_VERSION>\Editor\Data\Tools\UnityYAMLMerge.exe
+
+In the `C:\<Program Files> or <Program Files (x86)>\Unity\Hub\Editor\<UNITY_VERSION>\Editor\Data\Tools\` folder we must also locate the `mergespecfile.txt`
+
+Replace the two lines w/ the location of your p4merge.exe, if you have run the util already this should be installed for you (ctrl + f => "unity use" if you must)
+--> unity use "C:\Program Files\Perforce\p4merge.exe" "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+--> prefab use "C:\Program Files\Perforce\p4merge.exe" "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+
+
+git config --global commit.template ~/.gitmessage
+nano ~/.gitmessage
+
+```
+# [Add/Fix/Remove/Update/Refactor/Document] [summary]
+-
+# This line is intentionally left blank.
+
+# Why is it necessary? [Bug Fix/Feature/Improvement/Chore]
+-
+# How does the change address the issue? 
+-
+# Include a link to the ticket, if any.
+-
+```
+
+
+https://www.reddit.com/r/Unity3D/comments/39bdq5/how_to_solve_scene_conflicts_with_unitys_smart/
+
+https://docs.unity3d.com/Manual/SmartMerge.html
